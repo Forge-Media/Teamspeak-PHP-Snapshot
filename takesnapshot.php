@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?PHP
 
 /*
@@ -15,7 +16,7 @@ ideally 24hr intervals.
 /*-------SETTINGS-------*/
 $ts3_ip = '';
 $ts3_queryport = 10011;
-$ts3_user = ''; #Avoid using serveradmin
+$ts3_user = '' #Avoid serveradmin;
 $ts3_pass = '';
 $ts3_port = 9987;
 $mode = 3; #1: send to client | 2: send to channel | 3: send to server
