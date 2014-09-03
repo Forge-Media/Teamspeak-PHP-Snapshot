@@ -13,7 +13,10 @@ ideally 24hr intervals.
 0 0 * * * /usr/bin/php /home/directory/public_html/directory/takesnapshot.php >/dev/null 2>&1
 
 /*-------SETTINGS-------*/
-$ts3_ip = '';
+#Help CRON understand file directories in relation to the script
+chdir(dirname(__FILE__));
+
+$ts3_ip = '127.0.0.1';
 $ts3_queryport = 10011;
 $ts3_user = ''; #avoid serveradmin
 $ts3_pass = '';
@@ -28,25 +31,24 @@ $path = 'backups/';
 $counter = 0;
 /*----------------------*/
 
-
 #Include ts3admin.class.php
 require("library/ts3admin.class.php");
 
 
 #remove backups older than 7 days
 // Open the directory  
-if ($handle = opendir(dirname(__FILE__) . '/' . $path))  
+if ($handle = opendir($path))  
 {  
     // Loop through the directory  
     while (false !== ($file = readdir($handle)))  
     {  
 
         // Check the file we're doing is actually a file  
-        if (is_file(dirname(__FILE__) . '/' . $path.$file))  
+        if (is_file($path.$file))  
         {  
 
             // Check if the file is older than X days old  
-            if (filemtime(dirname(__FILE__) . '/' . $path.$file) < ( time() - ( $days * 24 * 60 * 60 ) ) )  
+            if (filemtime($path.$file) < ( time() - ( $days * 24 * 60 * 60 ) ) )  
             {  
             	$counter++;	
                 // Do the deletion  
@@ -77,10 +79,10 @@ if($tsAdmin->getElement('success', $tsAdmin->connect())) {
 	$strsnapshot = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $snapshot);
 
 	#save snapshot to ID-File temporary (not best solution)
-	file_put_contents(dirname(__FILE__) . '/' . $filedir, $strsnapshot);
+	file_put_contents($filedir, $strsnapshot);
 	
 	#Final-Save snapshot to ID-File
-	file_put_contents(dirname(__FILE__) . '/' . $filedir, implode(PHP_EOL, file(dirname(__FILE__) . '/' . $filedir, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)));
+	file_put_contents($filedir, implode(PHP_EOL, file($filedir, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)));
 
 	#Set message for TS & Web
 	$tsmessage = 'Backup successful. File saved as: '.$filedir."\r\n".'With ['.$counter.'] - 7 day old backups successfully deleted';
